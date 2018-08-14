@@ -3,28 +3,35 @@ import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback, Easing } fr
 
 export default class App extends React.Component {
   state = {
-    animation: new Animated.Value(0)
+    animation: new Animated.Value(1)
   }
 
-  startAnimation = () => {
-    Animated.timing(this.state.animation, {
-      toValue: 300,
-      duration: 500,
-      // easing: Easing.back(5),
-      // easing: Easing.bounce
-      // easing: Easing.elastic(3)
-      // easing: Easing.bezier(.06,1,.86,.23)
-    }).start();
+  handlePress = () => {
+    // this.state.animation.addListener(({ value }) => {
+    //   console.log(value)
+    // })
+    Animated.spring(this.state.animation, {
+      toValue: 2,
+      friction: 2,
+      tension: 160
+    }).start(() => {
+      Animated.spring(this.state.animation, {
+        toValue: 1,
+        duration: 100
+      }).start()
+    });
   }
 
   render() {
     const animatedStyles = {
-      transform: [{ translateY: this.state.animation }],
+      transform: [
+        { scale: this.state.animation }
+      ],
     }
 
     return (
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={this.startAnimation}>
+        <TouchableWithoutFeedback onPress={this.handlePress}>
           <Animated.View style={[styles.box, animatedStyles]} />
         </TouchableWithoutFeedback>
       </View>
@@ -35,11 +42,12 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
     justifyContent: "center",
   },
   box: {
-    width: 150,
-    height: 150,
+    width: 50,
+    height: 50,
     backgroundColor: "tomato",
   }
 });
