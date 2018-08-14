@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback } from 'reac
 
 export default class App extends React.Component {
   state = {
-    animation: new Animated.Value(150)
+    animation: new Animated.Value(0)
   }
 
   startAnimation = () => {
@@ -15,8 +15,8 @@ export default class App extends React.Component {
 
   render() {
     const animatedStyles = {
-      width: this.state.animation,
-      height: this.state.animation
+      top: this.state.animation,
+      left: this.state.animation
     }
 
     return (
@@ -38,8 +38,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   box: {
-    // width: 150,
-    // height: 150,
+    width: 150,
+    height: 150,
     backgroundColor: "tomato",
+    position: "absolute",
+    left: 0,
+    top: 0
   }
 });
