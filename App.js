@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback, Easing } from 'react-native';
 
 export default class App extends React.Component {
   state = {
@@ -8,33 +8,24 @@ export default class App extends React.Component {
 
   startAnimation = () => {
     Animated.timing(this.state.animation, {
-      toValue: 1,
-      duration: 1500
+      toValue: 300,
+      duration: 500,
+      // easing: Easing.back(5),
+      // easing: Easing.bounce
+      // easing: Easing.elastic(3)
+      // easing: Easing.bezier(.06,1,.86,.23)
     }).start();
   }
 
   render() {
-    const widthInterpolate = this.state.animation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["30%", "50%"], // Grow from 30% which is the starting point, 0 to 50% of 1 is half
-    })
-
-    const heightInterpolate = this.state.animation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["20%", "30%"], // Grow from 20% from th starting point to 30% of 1 
-    })
-
     const animatedStyles = {
-      width: widthInterpolate,
-      height: heightInterpolate
+      transform: [{ translateY: this.state.animation }],
     }
 
     return (
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={this.startAnimation}>
-          <Animated.View style={[styles.box, animatedStyles]} >
-            
-          </Animated.View>
+          <Animated.View style={[styles.box, animatedStyles]} />
         </TouchableWithoutFeedback>
       </View>
     );
@@ -44,12 +35,11 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
   },
   box: {
-    // width: "20%",
-    // height: "20%",
+    width: 150,
+    height: 150,
     backgroundColor: "tomato",
   }
 });
