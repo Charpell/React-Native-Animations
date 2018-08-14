@@ -8,34 +8,32 @@ export default class App extends React.Component {
 
   startAnimation = () => {
     Animated.timing(this.state.animation, {
-      toValue: 360,
+      toValue: 1,
       duration: 1500
     }).start();
   }
 
   render() {
-    const rotateInterpolate = this.state.animation.interpolate({
-      inputRange: [0, 360],
-      outputRange: ["0deg", "360deg"],
-      // outputRange: ["0deg", "180deg"] Spin half
+    const widthInterpolate = this.state.animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["30%", "50%"], // Grow from 30% which is the starting point, 0 to 50% of 1 is half
     })
 
+    const heightInterpolate = this.state.animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["20%", "30%"], // Grow from 20% from th starting point to 30% of 1 
+    })
 
     const animatedStyles = {
-      transform: [
-        {
-          rotate: rotateInterpolate,
-          // rotateX: rotateInterpolate,
-          // rotateY: rotateInterpolate
-        }
-      ]
+      width: widthInterpolate,
+      height: heightInterpolate
     }
 
     return (
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={this.startAnimation}>
           <Animated.View style={[styles.box, animatedStyles]} >
-            <Animated.Text>Hello Rotate</Animated.Text>
+            
           </Animated.View>
         </TouchableWithoutFeedback>
       </View>
@@ -50,8 +48,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   box: {
-    width: 150,
-    height: 150,
+    // width: "20%",
+    // height: "20%",
     backgroundColor: "tomato",
   }
 });
