@@ -3,31 +3,31 @@ import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback } from 'reac
 
 export default class App extends React.Component {
   state = {
-    animation: new Animated.Value(0)
+    animation: new Animated.Value(1)
   }
 
   startAnimation = () => {
     Animated.timing(this.state.animation, {
-      // toValue: -300, Y-axis
-      toValue: 300,  // X-axix
+      toValue: 2,
       duration: 1500
-    }).start(() => {
-      this.state.animation.setValue(0)
-    });
+    }).start();
   }
 
   render() {
     const animatedStyles = {
       transform: [
-        // { translateX: this.state.animation }, // Move in the horizontal direction
-        { translateY: this.state.animation }
+        { scale: this.state.animation },
+        // { scaleX: this.state.animation },
+        // { scaleY: this.state.animation }
       ]
     }
 
     return (
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={this.startAnimation}>
-          <Animated.View style={[styles.box, animatedStyles]} />
+          <Animated.View style={[styles.box, animatedStyles]}>
+            <Text>This side forward</Text>
+          </Animated.View>
         </TouchableWithoutFeedback>
       </View>
     );
