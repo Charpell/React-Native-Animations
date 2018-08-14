@@ -8,41 +8,34 @@ export default class App extends React.Component {
 
   startAnimation = () => {
     Animated.timing(this.state.animation, {
-      toValue: 1,
+      toValue: 360,
       duration: 1500
-    }).start(() => {
-      Animated.timing(this.state.animation, {
-        toValue: 0,
-        duration: 1500
-      }).start()
-    });
+    }).start();
   }
 
   render() {
-    const boxInterolation = this.state.animation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["rgb(255,99,71)", "rgb(99,71,255)"]
+    const rotateInterpolate = this.state.animation.interpolate({
+      inputRange: [0, 360],
+      outputRange: ["0deg", "360deg"],
+      // outputRange: ["0deg", "180deg"] Spin half
     })
 
-    const colorInterolation = this.state.animation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["rgb(99,71,255)", "rgb(255,99,71)"]
-    })
 
-    const boxAnimatedStyle = {
-      backgroundColor: boxInterolation
+    const animatedStyles = {
+      transform: [
+        {
+          rotate: rotateInterpolate,
+          // rotateX: rotateInterpolate,
+          // rotateY: rotateInterpolate
+        }
+      ]
     }
-
-    const textAnimatedStyle = {
-      color: colorInterolation
-    }
-
 
     return (
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={this.startAnimation}>
-          <Animated.View style={[styles.box, boxAnimatedStyle]} >
-            <Animated.Text style={textAnimatedStyle}>Hello Animation!</Animated.Text>
+          <Animated.View style={[styles.box, animatedStyles]} >
+            <Animated.Text>Hello Rotate</Animated.Text>
           </Animated.View>
         </TouchableWithoutFeedback>
       </View>
