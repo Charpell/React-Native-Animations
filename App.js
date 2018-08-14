@@ -1,13 +1,33 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback } from 'react-native';
 
 export default class App extends React.Component {
+  state = {
+    animation: new Animated.Value(1)
+  }
+
+  startAnimation = () => {
+    Animated.timing(this.state.animation, {
+      toValue: 0,
+      duration: 350
+    }).start(() => {
+      Animated.timing(this.state.animation, {
+        toValue: 1,
+        duration: 500,
+      }).start();
+    });
+  }
+
   render() {
+    const animatedStyles = {
+      opacity: this.state.animation
+    }
+
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+        <TouchableWithoutFeedback onPress={this.startAnimation}>
+          <Animated.View style={[styles.box, animatedStyles]} />
+        </TouchableWithoutFeedback>
       </View>
     );
   }
@@ -16,8 +36,12 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
+  box: {
+    width: 150,
+    height: 150,
+    backgroundColor: "tomato",
+  }
 });
