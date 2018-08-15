@@ -3,54 +3,51 @@ import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback, ScrollView,
 
 export default class App extends React.Component {
   state = {
-    colorAnimation: new Animated.Value(0),
-    scaleAnimation: new Animated.Value(1),
+    animation: new Animated.Value(0),
   };
 
-  handlePress = () => {
-    Animated.sequence([
-      Animated.timing(this.state.colorAnimation, {
-        toValue: 1,
-        duration: 500
-      }),
-      Animated.timing(this.state.scaleAnimation, {
+  startAnimation = () => {
+    Animated.timing(this.state.animation, {
+      toValue: 1,
+      duration: 1500
+    }).start(() => {
+      Animated.timing(this.state.animation, {
         toValue: 2,
         duration: 300
-      }),
-      Animated.delay(1500),
-        Animated.parallel([
-          Animated.timing(this.state.colorAnimation, {
-            toValue: 0,
-            duration: 500
-          }),
-          Animated.timing(this.state.scaleAnimation, {
-            toValue: 1,
-            duration: 300
-          })
-        ])
-      ]).start();
+      }).start();
+    });
   }
 
   
 
   render() {
-    const backgroundColorInterpolate = this.state.colorAnimation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["rgb(255,99,71)", "rgb(99,71,255)"]
+    const animatedInterpolate = this.state.animation.interpolate({
+      inputRange: [0, 1, 2],
+      outputRange: [0, 300, 0]
+    });
+
+    const interpolatedInterpolate = animatedInterpolate.interpolate({
+      inputRange: [0, 300],
+      outputRange: [1, .5]
+    });
+
+    const translateXInterpolate = animatedInterpolate.interpolate({
+      inputRange: [0, 30, 50, 80, 100, 150, 299, 300],
+      outputRange: [0, -30, -50, 80, -100, 300, 0, -100]
     })
-    
-    const boxStyle = {
-      backgroundColor: backgroundColorInterpolate,
+
+    const animatedStyles = {
       transform: [
-        { scale: this.state.scaleAnimation}
-      ]
+        { translateY: animatedInterpolate },
+        { translateX: translateXInterpolate}
+      ],
+      opacity: interpolatedInterpolate,
     }
+    
     return (
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={this.handlePress}>
-          <Animated.View style={[styles.box, boxStyle]}>
-            <Text style={styles.text}>Hello Parallel</Text>
-          </Animated.View>
+        <TouchableWithoutFeedback onPress={this.startAnimation}>
+          <Animated.View style={[styles.box, animatedStyles]} />
         </TouchableWithoutFeedback>
       </View>
     );
@@ -66,10 +63,6 @@ const styles = StyleSheet.create({
   box: {
     width: 150,
     height: 150,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    color: "#FFF",
+    backgroundColor: "tomato",
   }
 });
