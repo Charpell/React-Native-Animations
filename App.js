@@ -1,37 +1,44 @@
 import React from 'react';
-import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback, ScrollView, PanResponder } from 'react-native';
 
 export default class App extends React.Component {
   state = {
-    animation: new Animated.Value(1)
+    animation: new Animated.ValueXY(0)
   }
 
-  render() {
-    const backgroundInterpolate = this.state.animation.interpolate({
-      inputRange: [0, 3000],
-      outputRange: ["rgb(255,99,71)", "rgb(99,71,255)"]
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: (e, gestureState) => {
+        this.state.animation.extractOffset();
+      },
+      onPanResponderMove: Animated.event([
+        null,
+        { dx: this.state.animation.x, dy: this.state.animation.y }
+      ]),
+      onPanResponderRelease: (e, { vx, vy}) => {
+        Animated.decay(this.state.animation, {
+          velocity: { x: vx, y: vy },
+          deceleration: 0.997
+        }).start();
+      }
     });
+  }
 
-    const backgroundStyle = {
-      backgroundColor: backgroundInterpolate
-    }
+
+
+  render() {
+    const animatedStyle = {
+      transform: this.state.animation.getTranslateTransform(),
+    };
 
     return (
       <View style={styles.container}>
-       <ScrollView
-        scrollEventThrottle={16}
-        onScroll={ Animated.event([
-          {
-            nativeEvent: {
-              contentOffset: {
-                y: this.state.animation
-              }
-            }
-          }
-        ])}
-       >
-        <Animated.View style={[styles.content, backgroundStyle]} />
-       </ScrollView>
+        <Animated.View
+          style={[styles.box, animatedStyle]}
+          {...this._panResponder.panHandlers}
+        />
       </View>
     );
   }
@@ -40,8 +47,12 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  content: {
-    height: 3000,
-  }
+  box: {
+    width: 50,
+    height: 50,
+    backgroundColor: "tomato",
+  },
 });
