@@ -3,37 +3,41 @@ import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback, ScrollView,
 
 export default class App extends React.Component {
   state = {
-    animation: new Animated.Value(0),
+    animation: new Animated.Value(1),
   };
-
   startAnimation = () => {
     Animated.timing(this.state.animation, {
-      toValue: 1,
-      duration: 1500
+      // toValue: 3,
+      toValue: 2,
+      duration: 1500,
     }).start(() => {
-      this.state.animation.setValue(0)
-    });
-  }
+      Animated.timing(this.state.animation, {
+        // toValue: 0,
+        toValue: 1,
+        duration: 300,
+      }).start();
 
-  
+      // this.state.animation.setValue(5);
+    });
+  };
 
   render() {
-    const xInterpolate = this.state.animation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["0deg", "360deg"],
-      // outputRange: ["0rad", "6.28319rad"]
-    });
+    //extend: Default
+    //clamp: Whatever the end values we've defined are the values they will stay at, never go beyond
+    //identity: Takes on the value of the Animated.Value that you're passing in and ignores inputRange/outputRange
 
-    const yInterpolate = this.state.animation.interpolate({
-      inputRange: [0, 0.5, 1],
-      outputRange: ["0deg", "0deg", "180deg"],
-      // outputRange: ["0rad", "0rad", "3.141595rad"]
+    const scaleInterpolate = this.state.animation.interpolate({
+      inputRange: [1, 2],
+      outputRange: [1, 2],
+      // extrapolate: "identity",
+      // extrapolate: "clamp",
+      // extrapolateLeft: "clamp",
+      // extrapolateRight: "clamp"
     });
 
     const animatedStyles = {
-      transform: [{ rotateX: xInterpolate }, { rotateY: yInterpolate }],
+      transform: [{ scale: scaleInterpolate }],
     };
-
 
     return (
       <View style={styles.container}>
@@ -43,6 +47,7 @@ export default class App extends React.Component {
       </View>
     );
   }
+
 }
 
 const styles = StyleSheet.create({
