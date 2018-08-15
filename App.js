@@ -6,9 +6,9 @@ export default class App extends React.Component {
     colorAnimation: new Animated.Value(0),
     scaleAnimation: new Animated.Value(1),
   };
-  
+
   handlePress = () => {
-    Animated.parallel([
+    Animated.sequence([
       Animated.timing(this.state.colorAnimation, {
         toValue: 1,
         duration: 500
