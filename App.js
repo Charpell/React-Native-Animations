@@ -3,42 +3,41 @@ import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback, ScrollView,
 
 export default class App extends React.Component {
   state = {
-    animation: new Animated.ValueXY(0)
+    animation: new Animated.Value(0)
   }
 
-  componentWillMount() {
-    this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: (e, gestureState) => {
-        this.state.animation.extractOffset();
-      },
-      onPanResponderMove: Animated.event([
-        null,
-        { dx: this.state.animation.x, dy: this.state.animation.y }
-      ]),
-      onPanResponderRelease: (e, { vx, vy}) => {
-        Animated.decay(this.state.animation, {
-          velocity: { x: vx, y: vy },
-          deceleration: 0.997
-        }).start();
-      }
+  startAnimation = () => {
+    Animated.timing(this.state.animation, {
+      toValue: 300,
+      duration: 1500,
+    }).start(() => {
+      Animated.timing(this.state.animation, {
+        toValue: 0,
+        duration: 200,
+      }).start();
     });
-  }
+  };
 
-
+  
 
   render() {
-    const animatedStyle = {
-      transform: this.state.animation.getTranslateTransform(),
+    const randomValue = new Animated.Value(50)
+
+    const newAnimation = Animated.add(this.state.animation, randomValue)
+
+    const animatedStyles = {
+      transform: [
+        {
+          translateY: newAnimation
+        }
+      ]
     };
 
     return (
       <View style={styles.container}>
-        <Animated.View
-          style={[styles.box, animatedStyle]}
-          {...this._panResponder.panHandlers}
-        />
+        <TouchableWithoutFeedback onPress={this.startAnimation}>
+          <Animated.View style={[styles.box, animatedStyles]} />
+        </TouchableWithoutFeedback>
       </View>
     );
   }
@@ -51,8 +50,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   box: {
-    width: 50,
-    height: 50,
+    width: 150,
+    height: 150,
     backgroundColor: "tomato",
   },
 });
