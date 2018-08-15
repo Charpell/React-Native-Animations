@@ -21,9 +21,9 @@ export default class App extends React.Component {
   
 
   render() {
-    const randomValue = new Animated.Value(2)
+    const randomValue = new Animated.Value(6)
 
-    const newAnimation = Animated.divide(this.state.animation, randomValue)
+    const newAnimation = Animated.multiply(this.state.animation, randomValue)
 
     const animatedStyles = {
       transform: [
