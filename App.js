@@ -3,37 +3,43 @@ import { StyleSheet, Text, View, Animated, TouchableWithoutFeedback, ScrollView,
 
 export default class App extends React.Component {
   state = {
-    animation: new Animated.Value(0)
-  }
-
-  startAnimation = () => {
-    Animated.parallel([
-      Animated.timing(this.state.animation, {
-        toValue: 12,
-        duration: 3500,
-      }),
-    ]).start();
+    colorAnimation: new Animated.Value(0),
+    scaleAnimation: new Animated.Value(1),
   };
+  
+  handlePress = () => {
+    Animated.parallel([
+      Animated.timing(this.state.colorAnimation, {
+        toValue: 1,
+        duration: 500
+      }),
+      Animated.timing(this.state.scaleAnimation, {
+        toValue: 2,
+        duration: 300
+      })
+    ]).start();
+  }
 
   
 
   render() {
-    const randomValue = 3
-    const newAnimation = Animated.modulo(this.state.animation, randomValue)
-
-    const interpolated = newAnimation.interpolate({
-      inputRange: [0, 3],
-      outputRange: ["0deg", "270deg"]
+    const backgroundColorInterpolate = this.state.colorAnimation.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["rgb(255,99,71)", "rgb(99,71,255)"]
     })
-
-    const animatedStyles = {
-      transform: [{ rotate: interpolated }],
-    };
-
+    
+    const boxStyle = {
+      backgroundColor: backgroundColorInterpolate,
+      transform: [
+        { scale: this.state.scaleAnimation}
+      ]
+    }
     return (
       <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={this.startAnimation}>
-          <Animated.View style={[styles.box, animatedStyles]} />
+        <TouchableWithoutFeedback onPress={this.handlePress}>
+          <Animated.View style={[styles.box, boxStyle]}>
+            <Text style={styles.text}>Hello Parallel</Text>
+          </Animated.View>
         </TouchableWithoutFeedback>
       </View>
     );
@@ -49,6 +55,10 @@ const styles = StyleSheet.create({
   box: {
     width: 150,
     height: 150,
-    backgroundColor: "tomato",
+    alignItems: "center",
+    justifyContent: "center",
   },
+  text: {
+    color: "#FFF",
+  }
 });
