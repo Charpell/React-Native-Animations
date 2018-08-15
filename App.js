@@ -8,48 +8,38 @@ export default class App extends React.Component {
 
   startAnimation = () => {
     Animated.timing(this.state.animation, {
-      toValue: 1,
+      toValue: 2,
       duration: 1500
     }).start(() => {
-      Animated.timing(this.state.animation, {
-        toValue: 2,
-        duration: 300
-      }).start();
+      this.state.animation.setValue(0)
     });
   }
 
   
 
   render() {
-    const animatedInterpolate = this.state.animation.interpolate({
+    const colorInterpolate = this.state.animation.interpolate({
       inputRange: [0, 1, 2],
-      outputRange: [0, 300, 0]
+      outputRange: ["rgb(71,255,99)", "rgb(255,99,71)", "rgb(99,71,255)"],
     });
 
-    const interpolatedInterpolate = animatedInterpolate.interpolate({
-      inputRange: [0, 300],
-      outputRange: [1, .5]
-    });
-
-    const translateXInterpolate = animatedInterpolate.interpolate({
-      inputRange: [0, 30, 50, 80, 100, 150, 299, 300],
-      outputRange: [0, -30, -50, 80, -100, 300, 0, -100]
-    })
+    const bgStyle = {
+      backgroundColor: this.state.animation.interpolate({
+        inputRange: [0, 2],
+        outputRange: ["rgba(255,99,71, 1)", "rgba(255,99,71, 0)"]
+      })
+    }
 
     const animatedStyles = {
-      transform: [
-        { translateY: animatedInterpolate },
-        { translateX: translateXInterpolate}
-      ],
-      opacity: interpolatedInterpolate,
+      backgroundColor: colorInterpolate
     }
-    
+
     return (
-      <View style={styles.container}>
+      <Animated.View style={[styles.container, bgStyle]}>
         <TouchableWithoutFeedback onPress={this.startAnimation}>
           <Animated.View style={[styles.box, animatedStyles]} />
         </TouchableWithoutFeedback>
-      </View>
+      </Animated.View>
     );
   }
 }
